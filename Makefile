@@ -1,12 +1,14 @@
 
 NAME := philo
 CC := cc
-FLAGS := -Wall -Wextra -Werror
+FLAGS := -g  -fsanitize=thread -Wall -Wextra -Werror
 
 # Source files
-SRCS := src/main.c \
-        src/parsing.c \
-        src/philo.c
+SRCS := src/main.c        \
+        src/parsing.c     \
+        src/utils.c       \
+        src/mem_utils.c   \
+        src/philo.c       \
 
 # Object files
 OBJS := $(SRCS:.c=.o)
@@ -54,7 +56,7 @@ fclean: clean
 re: fclean all
 
 nothing:
-	@if [ -f "$(NAME)" ] && [ -z "$$(find src/ -name '*.c' -newer $(NAME))" ]; then \
+	@if [ -f "$(NAME)" ] && [ -z "$$(find $(SRCS) -newer $(NAME))" ]; then \
 		echo "$(CYAN)Nothing has been updated.$(CLR_RMV)"; \
 	fi
 

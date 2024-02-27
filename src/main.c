@@ -1,25 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vphilipp <vphilipp@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/26 10:17:58 by vphilipp          #+#    #+#             */
+/*   Updated: 2024/02/26 16:36:21 by vphilipp         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 // philo.c
 
 #include "../includes/philo.h"
+#include <pthread.h>
 
 // Implement other necessary functions
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-  t_table *table;
-
-  table = create_table(argc, argv);
-  if (!table)
-    return(printf("Table creation failed, verify inputs\n"), 1);
-  //
-    // Parse command line arguments
-    // Initialize variables and data structures
-
-    // Create philosopher threads
-    // Start the simulation
-
-    // Cleanup and exit
-    return 0;
+	t_table	*table;
+	if (verify_inputs(argc, argv))
+		exit(1);
+	table = create_table(argc, argv);
+	init(table);
+	join_philos(table);
+	clear_table(table);
+	return (0);
 }
-
