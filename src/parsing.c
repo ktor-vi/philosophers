@@ -53,10 +53,7 @@ t_philo	**init_philos(t_table *table)
 			philos[i]->l_chop = table->chopsticks[table->nb_philos - 1];
 		else
 			philos[i]->l_chop = table->chopsticks[i - 1];
-
 		philos[i]->table = table;
-		if (pthread_create(&philos[i]->thread, NULL, &p_routine, philos[i]) < 0)
-			philos[i]->failed = true;
 	}
 	return (philos);
 }
@@ -103,9 +100,18 @@ t_table	*create_table(int argc, char **argv)
 
 void	init(t_table *table)
 {
+	int	i;
+
+	i = -1;
 	table->start_time = (*get_current_time)();
 	table->chopsticks = init_chopsticks(table);
 	table->philos = init_philos(table);
+	while (++i < table->nb_philos)
+	{
+		if (pthread_create(&table->philos[i]->thread, NULL, &p_routine,
+				table->philos[i]) < 0)
+			table->philos[i]->failed = true;
+	}
 	table->failed = false;
 	if (pthread_mutex_init(&table->dead, NULL) < 0)
 		table->failed = true;

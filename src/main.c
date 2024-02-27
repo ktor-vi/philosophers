@@ -10,16 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// philo.c
-
 #include "../includes/philo.h"
 #include <pthread.h>
-
-// Implement other necessary functions
 
 int	main(int argc, char **argv)
 {
 	t_table	*table;
+
 	if (verify_inputs(argc, argv))
 		exit(1);
 	table = create_table(argc, argv);

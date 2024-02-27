@@ -22,6 +22,7 @@ void	join_philos(t_table *table)
 		pthread_join(table->philos[i]->thread, NULL);
 	return ;
 }
+
 void	print_state(t_philo *philo, char state)
 {
 	long	time;
@@ -40,6 +41,7 @@ void	print_state(t_philo *philo, char state)
 		printf("%lu %d died\n", time, philo->id);
 	pthread_mutex_unlock(&philo->table->print);
 }
+
 void	*rip_in_peace(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->table->dead);
@@ -79,8 +81,6 @@ void	*p_routine(void *arg)
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 1)
 		ft_usleep(philo->table->time_to_eat / 10);
-	// else
-	// 	ft_usleep(philo->table->time_to_sleep);
 	while (!philo->table->end && philo->alive && !philo->reached_max)
 	{
 		delay = (*get_current_time)() - philo->time_last_meal;
@@ -97,14 +97,3 @@ void	*p_routine(void *arg)
 	}
 	return (NULL);
 }
-
-// void create_threads(t_table *table)
-// {
-// 	int i;
-//
-// 	i = -1;
-// 	while (++i < table->nb_philos)
-// 		if (pthread_create(&table->philos[i]->thread, NULL, &p_routine,
-// table->philos[i]) < 0)
-// 			table->philos[i]->failed = true;
-// }
