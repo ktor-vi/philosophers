@@ -1,7 +1,7 @@
 
 NAME := philo
 CC := cc
-FLAGS := -g  -fsanitize=thread -Wall -Wextra -Werror
+FLAGS := -arch x86_64 -masm=intel -g  -Wall -Wextra -Werror  -fsanitize=thread #-fsanitize=address
 
 # Source files
 SRCS := src/main.c        \
@@ -9,6 +9,7 @@ SRCS := src/main.c        \
         src/utils.c       \
         src/mem_utils.c   \
         src/philo.c       \
+        src/print.c       \
 
 # Object files
 OBJS := $(SRCS:.c=.o)
@@ -61,4 +62,3 @@ nothing:
 	fi
 
 .PHONY: all re clean fclean nothing
-
