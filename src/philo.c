@@ -48,7 +48,7 @@ void *d_routine(void *arg) {
     }
     if (everyone_full(table))
       return (0);
-        ft_usleep(5);
+    ft_usleep(10);
     }
 
 }
@@ -59,15 +59,17 @@ void take_forks_and_spaghett(t_philo *philo)
 if(philo->id % 2 == 0)
   {
     pthread_mutex_lock(&philo->r_chop->chopstick);
+      print_state(philo, 'f');
   pthread_mutex_lock(&philo->l_chop->chopstick);
   }
   else
   {
     pthread_mutex_lock(&philo->l_chop->chopstick);
+      print_state(philo, 'f');
+
         pthread_mutex_lock(&philo->r_chop->chopstick);
   }
   philo->eating = true;
-  print_state(philo, 'f');
   print_state(philo, 'e');
   philo->meals_eaten++;
   if (philo->meals_eaten == philo->table->max_meals)
@@ -93,8 +95,8 @@ void *p_routine(void *arg) {
 
   philo = (t_philo *)arg;
   if (philo->id % 2 == 1)
-    ft_usleep(10);
-        while (!philo->table->end && philo->alive && !philo->reached_max) {
+    ft_usleep(15);
+  while (!philo->table->end && philo->alive && !philo->reached_max) {
     take_forks_and_spaghett(philo);
     if (!philo->table->end && philo->alive && philo->table->nb_philos != 1) {
       print_state(philo, 's');

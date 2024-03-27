@@ -91,16 +91,17 @@ void init(t_table *table) {
   table->start_time = (*get_current_time)();
   table->chopsticks = init_chopsticks(table);
   table->philos = init_philos(table);
-  init_dead_thread(table);
   if (pthread_mutex_init(&table->dead, NULL) < 0)
     table->failed = true;
   if (pthread_mutex_init(&table->print, NULL) < 0)
     table->failed = true;
+  init_dead_thread(table);
   while (++i < table->nb_philos) {
     if (pthread_create(&table->philos[i]->thread, NULL, &p_routine,
                        table->philos[i]) < 0)
       table->philos[i]->failed = true;
   }
+
   if (verif_table(table)) {
     clear_table(table);
     exit(1);
