@@ -1,7 +1,7 @@
 
 NAME := philo
 CC := cc
-FLAGS := -arch x86_64 -masm=intel -g  -Wall -Wextra -Werror  -fsanitize=thread #-fsanitize=address
+FLAGS := -pthread  -lpthread -g -O3 -Wall -Wextra -Werror -fsanitize=thread #-fsanitize=address
 
 # Source files
 SRCS := src/main.c        \
