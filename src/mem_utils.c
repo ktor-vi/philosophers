@@ -62,3 +62,35 @@ int	verif_table(t_table *table)
 	}
 	return (0);
 }
+
+void	lock_mtx(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(&philo->r_chop->chopstick);
+		print_state(philo, 'f');
+		if (philo->table->nb_philos != 1)
+			pthread_mutex_lock(&philo->l_chop->chopstick);
+	}
+	else
+	{
+		pthread_mutex_lock(&philo->l_chop->chopstick);
+		print_state(philo, 'f');
+		pthread_mutex_lock(&philo->r_chop->chopstick);
+	}
+}
+
+void	unlock_mtx(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		if (philo->table->nb_philos != 1)
+			pthread_mutex_unlock(&philo->l_chop->chopstick);
+		pthread_mutex_unlock(&philo->r_chop->chopstick);
+	}
+	else
+	{
+		pthread_mutex_unlock(&philo->r_chop->chopstick);
+		pthread_mutex_unlock(&philo->l_chop->chopstick);
+	}
+}
