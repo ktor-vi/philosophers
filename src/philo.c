@@ -70,8 +70,9 @@ void	take_forks_and_spaghett(t_philo *philo)
 			philo->reached_max = true;
 		philo->time_last_meal = get_current_time();
 		ft_usleep(philo->table->time_to_eat);
+			philo->eating = false;
+
 	}
-	philo->eating = false;
 	unlock_mtx(philo);
 }
 
@@ -81,7 +82,7 @@ void	*p_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 1)
-		ft_usleep(15);
+		ft_usleep(50);
 	while (!philo->table->end && philo->alive && !philo->reached_max)
 	{
 		take_forks_and_spaghett(philo);
