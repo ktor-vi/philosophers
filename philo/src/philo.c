@@ -52,7 +52,7 @@ void	*d_routine(void *arg)
 				return (rip_in_peace(table->philos[i]));
 			}
 		}
-		ft_usleep(10);
+		ft_usleep(5);
 		if (everyone_full(table))
 			return (0);
 	}

@@ -16,6 +16,19 @@ static void	ft_putchar(char a)
 {
 	write(1, &a, 1);
 }
+static void	write_zeros(long nb)
+{
+	int	digits;
+
+	digits = 9;
+	while (nb >= 10)
+	{
+		nb /= 10;
+		digits--;
+	}
+	while (digits-- > 0)
+		write(1, "0", 1);
+}
 
 static void	ft_putl(long nb)
 {
@@ -45,6 +58,7 @@ void	print_state(t_philo *philo, char state)
 	pthread_mutex_lock(&philo->table->print);
 	if (!philo->table->end)
 	{
+		write_zeros((*get_current_time)() - (philo->table->start_time));
 		ft_putl((*get_current_time)() - (philo->table->start_time));
 		write(1, " ", 1);
 		ft_putl(philo->id);
@@ -59,6 +73,7 @@ void	print_state(t_philo *philo, char state)
 	}
 	if (state == 'd')
 	{
+		write_zeros((*get_current_time)() - (philo->table->start_time));
 		ft_putl((*get_current_time)() - (philo->table->start_time));
 		write(1, " ", 1);
 		ft_putl(philo->id);
