@@ -16,11 +16,12 @@ static void	ft_putchar(char a)
 {
 	write(1, &a, 1);
 }
+
 static void	write_zeros(long nb)
 {
 	int	digits;
 
-	digits = 9;
+	digits = 7;
 	while (nb >= 10)
 	{
 		nb /= 10;
