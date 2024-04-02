@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 int	verify_inputs(int argc, char **argv)
 {
@@ -74,19 +76,15 @@ int	ft_atol(const char *str)
 	return (result * sign);
 }
 
-bool	everyone_full(t_table *table)
+void	kill_processes(t_table *table)
 {
 	int	i;
 
-	i = -1;
-	while (++i < table->nb_philos)
+	i = 0;
+	while (i < table->nb_philos)
 	{
-		if (table->philos[i]->reached_max && i < table->nb_philos - 1)
-			continue ;
-		else if (table->philos[i]->reached_max && i == table->nb_philos - 1)
-			return (true);
-		else
-			break ;
+		kill(table->philos[i]->pid, SIGKILL);
+		++i;
 	}
-	return (false);
+	free(table->philos);
 }

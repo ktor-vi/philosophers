@@ -19,7 +19,6 @@ void	run(t_table *table)
 	size_t	i;
 
 	i = -1;
-	// init_dead_thread(table);
 	while (++i < table->nb_philos)
 	{
 		table->philos[i]->pid = fork();
@@ -28,9 +27,7 @@ void	run(t_table *table)
 		else if (table->philos[i]->pid == 0)
 			p_routine(table->philos[i]);
 	}
-	i = -1;
-	while (++i < table->nb_philos)
-		waitpid(table->philos[i]->pid, NULL, 0);
+	return ;
 }
 int	main(int argc, char **argv)
 {
@@ -42,7 +39,10 @@ int	main(int argc, char **argv)
 	table = create_table(argc, argv);
 	init(table);
 	run(table);
-	pthread_join(table->dead_thread, NULL);
+	i = -1;
+	while (++i < table->nb_philos)
+		sem_wait(table->end_sem);
+	kill_processes(table);
 	clear_table(table);
 	return (0);
 }

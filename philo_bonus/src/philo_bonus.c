@@ -14,63 +14,46 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-static int	rip_in_peace(t_philo *philo)
-{
-	sem_wait("/dead");
-	philo->alive = false;
-	philo->table->end = true;
-	print_state(philo, 'd');
-	sem_post("/end");
-	sem_post("/dead");
-	return (1);
-}
-
-int	d_routine(void *arg)
+void	*d_routine(void *arg)
 {
 	t_philo	*philo;
+	int		i;
 
 	philo = (t_philo *)arg;
 	while (1)
 	{
 		if (get_current_time()
 			- philo->time_last_meal > philo->table->time_to_die
-			&& !philo->eating && !philo->reached_max)
+			&& !philo->reached_max)
 		{
-			philo->alive = false; // Set alive to false first
-			sem_wait("/dead");
-			philo->table->end = true;
 			print_state(philo, 'd');
-			sem_post("/end");
-			sem_post("/dead");
-			return (1);
-		}
-		else
-		{
+			i = -1;
+			while (++i < philo->table->nb_philos)
+				sem_post(philo->table->end_sem);
 			return (0);
 		}
-		ft_usleep(5);
+		ft_usleep(50);
 	}
 }
 void	take_forks_and_spaghett(t_philo *philo)
 {
-	sem_wait("/chopsticks");
+	sem_wait(philo->table->chopsticks);
 	print_state(philo, 'f');
-	if (philo->table->nb_philos != 1)
+	if (philo->table->nb_philos == 1)
+		return ;
+	sem_wait(philo->table->chopsticks);
+	print_state(philo, 'f');
+	print_state(philo, 'e');
+	ft_usleep(philo->table->time_to_eat);
+	philo->time_last_meal = get_current_time();
+	philo->meals_eaten++;
+	sem_post(philo->table->chopsticks);
+	sem_post(philo->table->chopsticks);
+	if (philo->meals_eaten == philo->table->max_meals)
 	{
-		sem_wait("/chopsticks");
-		philo->eating = true;
-		print_state(philo, 'f');
-		print_state(philo, 'e');
-		philo->meals_eaten++;
-		philo->time_last_meal = get_current_time();
-		if (philo->meals_eaten == philo->max_meals)
-			philo->reached_max = true;
-		;
-		ft_usleep(philo->table->time_to_eat);
-		philo->eating = false;
-		sem_post("/chopsticks");
+		philo->reached_max = true;
+		sem_post(philo->table->end_sem);
 	}
-	sem_post("/chopsticks");
 }
 
 void	p_routine(t_philo *arg)
@@ -78,25 +61,20 @@ void	p_routine(t_philo *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	// if (philo->id % 2 == 0)
-	// 	ft_usleep(50);
-	while (!philo->table->end && !philo->reached_max)
+	if (philo->id % 2 == 0)
+		ft_usleep(50);
+	philo->time_last_meal = get_current_time();
+	init_dead_thread(philo);
+	while (!philo->reached_max)
 	{
-		sem_wait("/end");
-		if (d_routine(philo))
-			exit(EXIT_FAILURE);
 		take_forks_and_spaghett(philo);
-		if (!philo->table->end && philo->alive && philo->table->nb_philos != 1)
+		if (!philo->reached_max)
 		{
 			print_state(philo, 's');
 			ft_usleep(philo->table->time_to_sleep);
 			print_state(philo, 't');
 		}
-		if (d_routine(philo))
-			exit(EXIT_FAILURE);
-		if (philo->table->nb_philos == 1 || philo->reached_max
-			|| philo->table->end)
-			exit(EXIT_SUCCESS);
 	}
+	pthread_join(philo->dead_thread, NULL);
 	exit(EXIT_SUCCESS);
 }

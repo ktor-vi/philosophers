@@ -13,11 +13,11 @@
 #include "../includes/philo_bonus.h"
 #include <unistd.h>
 
-// void	init_dead_thread(t_table *table)
-// {
-// 	if (pthread_create(&table->dead_thread, NULL, &d_routine, table) < 0)
-// 		table->failed = true;
-// }
+void	init_dead_thread(t_philo *philo)
+{
+	if (pthread_create(&philo->dead_thread, NULL, &d_routine, philo) < 0)
+		philo->table->failed = true;
+}
 t_philo	**init_philos(t_table *table)
 {
 	int		i;
@@ -37,7 +37,6 @@ t_philo	**init_philos(t_table *table)
 		philos[i]->max_meals = table->max_meals;
 		philos[i]->reached_max = false;
 		philos[i]->meals_eaten = 0;
-		philos[i]->time_last_meal = get_current_time();
 		philos[i]->table = table;
 	}
 	return (philos);

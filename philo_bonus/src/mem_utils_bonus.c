@@ -23,13 +23,13 @@ void	clear_table(t_table *table)
 	sem_close(table->end_sem);
 	sem_close(table->chopsticks);
 	k = 0;
-	while (k < table->nb_philos)
-	{
-		if (table->philos[k])
-			free(table->philos[k]);
-		k++;
-	}
-	free(table->philos);
+	// while (k < table->nb_philos)
+	// {
+	// 	if (table->philos[k])
+	// 		free(table->philos[k]);
+	// 	k++;
+	// }
+	// free(table->philos);
 	k = 0;
 	sem_close(table->dead);
 	sem_close(table->print);

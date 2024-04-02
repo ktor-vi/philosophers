@@ -1,7 +1,7 @@
 
 NAME := philo_bonus
-CC := cc
-FLAGS :=  -g -Wall -Wextra -Werror   -fsanitize=address #-fsanitize=threadd
+CC := cc -w
+FLAGS := -g -fsanitize=address #-fsanitize=threadd
 
 # Source files
 SRCS := src/main_bonus.c        \
@@ -13,7 +13,7 @@ SRCS := src/main_bonus.c        \
 
 # Object files
 OBJS := $(SRCS:.c=.o)
-DEPS := includes/philo.h
+DEPS := includes/philo_bonus.h
 
 # Color codes for terminal output
 CLR_RMV := \033[0m

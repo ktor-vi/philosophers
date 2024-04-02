@@ -56,7 +56,7 @@ void	ft_putl(long nb)
 
 void	print_state(t_philo *philo, char state)
 {
-	sem_wait("/print");
+	sem_wait(philo->table->print);
 	write_zeros((*get_current_time)() - (philo->table->start_time));
 	ft_putl((*get_current_time)() - (philo->table->start_time));
 	write(1, " ", 1);
@@ -71,12 +71,12 @@ void	print_state(t_philo *philo, char state)
 		write(1, " is sleeping\n", 13);
 	if (state == 'd')
 		write(1, " died\n", 6);
-	sem_post("/print");
+	sem_post(philo->table->print);
 }
 
 void	print_meals(t_philo *philo)
 {
-	sem_wait("/print");
+	sem_wait(philo->table->print);
 	write(1, "philo : ", 8);
 	ft_putl(philo->id);
 	write(1, "  meals : ", 10);
@@ -99,5 +99,5 @@ void	print_meals(t_philo *philo)
 	{
 		write(1, "true\n", 5);
 	}
-	sem_post("/print");
+	sem_post(philo->table->print);
 }

@@ -16,12 +16,15 @@
 # include <limits.h>
 # include <pthread.h>
 # include <semaphore.h>
+# include <signal.h>
 # include <stdatomic.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/semaphore.h>
 # include <sys/time.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include <unistd.h>
 
 typedef struct s_chopstick
@@ -33,7 +36,7 @@ typedef struct s_chopstick
 
 typedef struct s_philo
 {
-	pthread_t		thread;
+	pthread_t		dead_thread;
 	bool			failed;
 	_Atomic(bool) eating;
 	int				id;
@@ -53,22 +56,23 @@ typedef struct s_table
 	long			max_meals;
 	long			time_to_eat;
 	long			time_to_sleep;
-	long			start_time;
+	_Atomic(long) start_time;
 	sem_t			*end_sem;
 	_Atomic(bool) end;
-	pthread_t		dead_thread;
 	sem_t			*dead;
 	sem_t			*print;
 	bool			failed;
 	sem_t			*chopsticks;
 	t_philo			**philos;
 }					t_table;
+void				kill_processes(t_table *table);
+
 void				ft_putl(long nb);
 void				print_meals(t_philo *philo);
-void				init_dead_thread(t_table *table);
+void				init_dead_thread(t_philo *philo);
 void				p_routine(t_philo *arg);
 void				join_philos(t_table *table);
-int					d_routine(void *arg);
+void				*d_routine(void *arg);
 bool				everyone_full(t_table *table);
 void				create_threads(t_table *table);
 void				lock_mtx(t_philo *philo);
