@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 static void	ft_putchar(char a)
 {
@@ -31,7 +31,7 @@ static void	write_zeros(long nb)
 		write(1, "0", 1);
 }
 
-static void	ft_putl(long nb)
+void	ft_putl(long nb)
 {
 	if (nb == LONG_MIN)
 	{
@@ -56,37 +56,27 @@ static void	ft_putl(long nb)
 
 void	print_state(t_philo *philo, char state)
 {
-	pthread_mutex_lock(&philo->table->print);
-	if (!philo->table->end)
-	{
-		write_zeros((*get_current_time)() - (philo->table->start_time));
-		ft_putl((*get_current_time)() - (philo->table->start_time));
-		write(1, " ", 1);
-		ft_putl(philo->id);
-		if (state == 'f')
-			write(1, " \033[34mhas taken a fork\n\033[0m", 28);
-		if (state == 'e')
-			write(1, " \033[32mis eating\n\033[0m", 16);
-		if (state == 't')
-			write(1, " \033[33mis thinking\n\033[0m", 18);
-		if (state == 's')
-			write(1, " \033[35mis sleeping\n\033[0m", 18); // Purple color code
-	}
+	sem_wait("/print");
+	write_zeros((*get_current_time)() - (philo->table->start_time));
+	ft_putl((*get_current_time)() - (philo->table->start_time));
+	write(1, " ", 1);
+	ft_putl(philo->id);
+	if (state == 'f')
+		write(1, " has taken a fork\n", 18);
+	if (state == 'e')
+		write(1, " is eating\n", 11);
+	if (state == 't')
+		write(1, " is thinking\n", 13);
+	if (state == 's')
+		write(1, " is sleeping\n", 13);
 	if (state == 'd')
-	{
-		write_zeros((*get_current_time)() - (philo->table->start_time));
-		ft_putl((*get_current_time)() - (philo->table->start_time));
-		write(1, " ", 1);
-		ft_putl(philo->id);
-		write(1, " \033[31mdied\n\033[0m", 11); // Red color code
-	}
-	write(1, "\033[0m", 4); // Reset color
-	pthread_mutex_unlock(&philo->table->print);
+		write(1, " died\n", 6);
+	sem_post("/print");
 }
 
 void	print_meals(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->table->print);
+	sem_wait("/print");
 	write(1, "philo : ", 8);
 	ft_putl(philo->id);
 	write(1, "  meals : ", 10);
@@ -94,11 +84,20 @@ void	print_meals(t_philo *philo)
 	write(1, "  max : ", 9);
 	if (philo->reached_max == false)
 	{
+		write(1, "false", 5);
+	}
+	else
+	{
+		write(1, "true", 4);
+	}
+	write(1, "  eat : ", 8);
+	if (philo->eating == false)
+	{
 		write(1, "false\n", 6);
 	}
 	else
 	{
 		write(1, "true\n", 5);
 	}
-	pthread_mutex_unlock(&philo->table->print);
+	sem_post("/print");
 }
