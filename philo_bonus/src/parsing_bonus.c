@@ -18,6 +18,7 @@ void	init_dead_thread(t_philo *philo)
 	if (pthread_create(&philo->dead_thread, NULL, &d_routine, philo) < 0)
 		philo->table->failed = true;
 }
+
 t_philo	**init_philos(t_table *table)
 {
 	int		i;
@@ -35,6 +36,7 @@ t_philo	**init_philos(t_table *table)
 		philos[i]->id = i + 1;
 		philos[i]->alive = true;
 		philos[i]->max_meals = table->max_meals;
+		philos[i]->time_last_meal = get_current_time();
 		philos[i]->reached_max = false;
 		philos[i]->meals_eaten = 0;
 		philos[i]->table = table;
@@ -66,15 +68,15 @@ void	init(t_table *table)
 	int	i;
 
 	i = -1;
+	sem_unlink("/chopsticks");
+	sem_unlink("/print");
+	sem_unlink("/end");
 	table->failed = false;
 	table->start_time = (*get_current_time)();
 	table->philos = init_philos(table);
 	table->chopsticks = sem_open("/chopsticks", O_CREAT, 0644,
 			table->nb_philos);
 	if (table->chopsticks == SEM_FAILED)
-		table->failed = true;
-	table->dead = sem_open("/dead", O_CREAT, 0644, 1);
-	if (table->dead == SEM_FAILED)
 		table->failed = true;
 	table->print = sem_open("/print", O_CREAT, 0644, 1);
 	if (table->print == SEM_FAILED)

@@ -26,9 +26,11 @@ void	run(t_table *table)
 			table->failed = true;
 		else if (table->philos[i]->pid == 0)
 			p_routine(table->philos[i]);
+		ft_usleep(50);
 	}
 	return ;
 }
+
 int	main(int argc, char **argv)
 {
 	t_table	*table;
@@ -43,6 +45,6 @@ int	main(int argc, char **argv)
 	while (++i < table->nb_philos)
 		sem_wait(table->end_sem);
 	kill_processes(table);
-	clear_table(table);
+	unlink_sems(table);
 	return (0);
 }

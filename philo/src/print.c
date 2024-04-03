@@ -17,20 +17,6 @@ static void	ft_putchar(char a)
 	write(1, &a, 1);
 }
 
-static void	write_zeros(long nb)
-{
-	int	digits;
-
-	digits = 7;
-	while (nb >= 10)
-	{
-		nb /= 10;
-		digits--;
-	}
-	while (digits-- > 0)
-		write(1, "0", 1);
-}
-
 static void	ft_putl(long nb)
 {
 	if (nb == LONG_MIN)
@@ -54,15 +40,30 @@ static void	ft_putl(long nb)
 	ft_putl(nb % 10);
 }
 
+static void	write_time_id(long nb, t_philo *philo)
+{
+	int	digits;
+
+	digits = 7;
+	while (nb >= 10)
+	{
+		nb /= 10;
+		digits--;
+	}
+	while (digits-- > 0)
+		write(1, "0", 1);
+	ft_putl((*get_current_time)() - (philo->table->start_time));
+	write(1, " ", 1);
+	ft_putl(philo->id);
+}
+
 void	print_state(t_philo *philo, char state)
 {
 	pthread_mutex_lock(&philo->table->print);
 	if (!philo->table->end)
 	{
-		write_zeros((*get_current_time)() - (philo->table->start_time));
-		ft_putl((*get_current_time)() - (philo->table->start_time));
-		write(1, " ", 1);
-		ft_putl(philo->id);
+		write_time_id((*get_current_time)() - (philo->table->start_time),
+			philo);
 		if (state == 'f')
 			write(1, " \033[34mhas taken a fork\n\033[0m", 28);
 		if (state == 'e')
@@ -70,17 +71,15 @@ void	print_state(t_philo *philo, char state)
 		if (state == 't')
 			write(1, " \033[33mis thinking\n\033[0m", 18);
 		if (state == 's')
-			write(1, " \033[35mis sleeping\n\033[0m", 18); // Purple color code
+			write(1, " \033[35mis sleeping\n\033[0m", 18);
 	}
 	if (state == 'd')
 	{
-		write_zeros((*get_current_time)() - (philo->table->start_time));
-		ft_putl((*get_current_time)() - (philo->table->start_time));
-		write(1, " ", 1);
-		ft_putl(philo->id);
-		write(1, " \033[31mdied\n\033[0m", 11); // Red color code
+		write_time_id((*get_current_time)() - (philo->table->start_time),
+			philo);
+		write(1, " \033[31mdied\n\033[0m", 11);
 	}
-	write(1, "\033[0m", 4); // Reset color
+	write(1, "\033[0m", 4);
 	pthread_mutex_unlock(&philo->table->print);
 }
 

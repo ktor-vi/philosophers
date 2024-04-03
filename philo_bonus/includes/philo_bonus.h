@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <limits.h>
 # include <pthread.h>
@@ -66,6 +66,7 @@ typedef struct s_table
 	t_philo			**philos;
 }					t_table;
 void				kill_processes(t_table *table);
+void				unlink_sems(t_table *table);
 
 void				ft_putl(long nb);
 void				print_meals(t_philo *philo);
