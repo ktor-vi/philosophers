@@ -17,15 +17,17 @@ void	clear_table(t_table *table)
 	int	k;
 
 	k = 0;
+	pthread_mutex_destroy(&table->dead);
+	pthread_mutex_destroy(&table->print);
 	while (k < table->nb_philos)
 	{
-		if (table->philos[k])
+		if (table->philos && table->chopsticks && table->philos[k])
 			free(table->philos[k]);
 		k++;
 	}
 	free(table->philos);
 	k = 0;
-	while (k < table->nb_philos)
+	while (k < table->nb_philos && table->chopsticks)
 	{
 		if (table->chopsticks[k])
 		{
@@ -35,8 +37,6 @@ void	clear_table(t_table *table)
 		k++;
 	}
 	free(table->chopsticks);
-	pthread_mutex_destroy(&table->dead);
-	pthread_mutex_destroy(&table->print);
 	free(table);
 }
 

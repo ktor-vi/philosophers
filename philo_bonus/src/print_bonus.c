@@ -56,21 +56,23 @@ void	ft_putl(long nb)
 
 void	print_state(t_philo *philo, char state)
 {
+	long	time;
+	char	*out;
+
+	out = NULL;
+	time = (*get_current_time)() - (philo->table->start_time);
 	sem_wait(philo->table->print);
-	write_zeros((*get_current_time)() - (philo->table->start_time));
-	ft_putl((*get_current_time)() - (philo->table->start_time));
-	write(1, " ", 1);
-	ft_putl(philo->id);
 	if (state == 'f')
-		write(1, " \033[34mhas taken a fork\n\033[0m", 28);
-	if (state == 'e')
-		write(1, " \033[32mis eating\n\033[0m", 16);
-	if (state == 't')
-		write(1, " \033[33mis thinking\n\033[0m", 18);
-	if (state == 's')
-		write(1, " \033[35mis sleeping\n\033[0m", 18);
-	if (state == 'd')
-		write(1, " \033[31mdied\n\033[0m", 11);
-	write(1, "\033[0m", 4);
+		out = MAGENTA "has taken a fork" RESET;
+	else if (state == 'e')
+		out = GREEN "is eating" RESET;
+	else if (state == 't')
+		out = YELLOW "is thinking" RESET;
+	else if (state == 's')
+		out = BLUE "is sleeping" RESET;
+	else if (state == 'd')
+		out = RED "died" RESET;
+	if (!philo->failed && !philo->table->failed)
+		printf("%08lu %i %s\n", time, philo->id, out);
 	sem_post(philo->table->print);
 }

@@ -22,7 +22,6 @@ void	unlink_sems(t_table *table)
 	sem_close(table->chopsticks);
 	sem_close(table->dead);
 	sem_close(table->print);
-	free(table);
 }
 
 void	clear_table(t_table *table)
@@ -37,6 +36,6 @@ void	clear_table(t_table *table)
 			free(table->philos[k]);
 		k++;
 	}
-	free(table->philos);
-	free(table);
+	if (table)
+		free(table);
 }

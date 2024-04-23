@@ -26,7 +26,7 @@ t_philo	**init_philos(t_table *table)
 
 	i = -1;
 	philos = malloc(table->nb_philos * sizeof(t_philo *));
-	while (++i < table->nb_philos)
+	while (++i < table->nb_philos && table->chopsticks)
 	{
 		philos[i] = malloc(sizeof(t_philo));
 		if (!philos || !philos[i])
@@ -88,7 +88,7 @@ t_table	*create_table(int argc, char **argv)
 	return (table);
 }
 
-void	init(t_table *table)
+int	init(t_table *table)
 {
 	int	i;
 
@@ -101,16 +101,16 @@ void	init(t_table *table)
 		table->failed = true;
 	if (pthread_mutex_init(&table->print, NULL) < 0)
 		table->failed = true;
-	init_dead_thread(table);
-	while (++i < table->nb_philos)
+	while (table->philos && table && table->chopsticks
+		&& ++i < table->nb_philos)
 	{
 		if (pthread_create(&table->philos[i]->thread, NULL, &p_routine,
 				table->philos[i]) < 0)
 			table->philos[i]->failed = true;
 	}
-	if (verif_table(table))
-	{
-		clear_table(table);
-		exit(1);
-	}
+	if (table && table->philos && table->chopsticks)
+		init_dead_thread(table);
+	if (verif_table(table) && table && table->philos && table->chopsticks)
+		return (clear_table(table));
+	return (0);
 }

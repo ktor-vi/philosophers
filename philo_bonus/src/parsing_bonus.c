@@ -84,7 +84,7 @@ void	init(t_table *table)
 	table->end_sem = sem_open("/end", O_CREAT, 0644, 0);
 	if (table->end_sem == SEM_FAILED)
 		table->failed = true;
-	if (table->failed)
+	if (table->failed || !table || !table->philos)
 	{
 		clear_table(table);
 		exit(1);

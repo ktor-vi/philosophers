@@ -19,8 +19,12 @@ void	run(t_table *table)
 	size_t	i;
 
 	i = -1;
+	if (!table || !table->philos)
+		exit(1);
 	while (++i < table->nb_philos)
 	{
+		if (!table->philos[i])
+			exit(1);
 		table->philos[i]->pid = fork();
 		if (table->philos[i]->pid == -1)
 			table->failed = true;
@@ -43,7 +47,11 @@ int	main(int argc, char **argv)
 	run(table);
 	i = -1;
 	while (++i < table->nb_philos)
+	{
+		table->failed = true;
+		table->philos[i]->failed = true;
 		sem_wait(table->end_sem);
+	}
 	kill_processes(table);
 	unlink_sems(table);
 	return (0);

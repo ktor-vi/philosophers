@@ -18,10 +18,12 @@ int	main(int argc, char **argv)
 	t_table	*table;
 
 	if (verify_inputs(argc, argv))
-		exit(1);
+		return (1);
 	table = create_table(argc, argv);
-	init(table);
+	if (init(table))
+		return (1);
 	join_philos(table);
-	clear_table(table);
+	if (table && table->philos)
+		clear_table(table);
 	return (0);
 }

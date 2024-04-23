@@ -18,9 +18,12 @@ void	join_philos(t_table *table)
 	int	i;
 
 	i = -1;
-	while (++i < table->nb_philos)
-		pthread_join(table->philos[i]->thread, NULL);
-	pthread_join(table->dead_thread, NULL);
+	if (table && table->philos && table->chopsticks)
+	{
+		while (++i < table->nb_philos)
+			pthread_join(table->philos[i]->thread, NULL);
+		pthread_join(table->dead_thread, NULL);
+	}
 	return ;
 }
 
@@ -40,6 +43,8 @@ void	*d_routine(void *arg)
 	t_table	*table;
 
 	table = (t_table *)arg;
+	if (!table || !table->philos)
+		return (0);
 	while (1)
 	{
 		i = -1;
